@@ -22,37 +22,41 @@ $(document).ready(function() {
         dragAndDropped = true;
     });
 
+    // map.on('mouseup', function(e) {
+    //     closePopup();
+    //     if (dragAndDropped) {
+    //         dragAndDropped = false;
+    //         // console.log('bailing');
+    //         return;
+    //     }
+    //
+    //     console.log('mouseup',e.originalEvent.which);
+    //
+    //     if (e.originalEvent.which == 1) { // left click
+    //         console.log('calling createMarker', e.lngLat.lng, e.lngLat.lat);
+    //         createMarker(e.lngLat.lng, e.lngLat.lat);
+    //     } else { // not left click
+    //         makePopupPicker(e);
+    //     }
+    //     // console.log(map.getZoom());
+    // });
+
     map.on('mouseup', function(e) {
         closePopup();
         if (dragAndDropped) {
             dragAndDropped = false;
-            // console.log('bailing');
+            console.log('bailing');
             return;
         }
-          console.log('mouseup',e.originalEvent.which);
-        // console.log(e.originalEvent.which);
-        // if (e.originalEvent.which == 1) { // left click
-        //     // createMarker(e.lngLat.lng, e.lngLat.lat);
-        // } else { // not left click
-        //     makePopupPicker(e);
-        // }
-        // console.log(map.getZoom());
-    });
 
-    map.on('click', function(e) {
-        closePopup();
-        if (dragAndDropped) {
-            dragAndDropped = false;
-            // console.log('bailing');
-            return;
+        console.log('clickkkk',e.originalEvent.which);
+
+        if (e.originalEvent.which != 1) { // not left click
+            // createMarker(e.lngLat.lng, e.lngLat.lat);
+        } else { // not left click
+            console.log('calling makePopupPicker', e.lngLat.lng, e.lngLat.lat);
+            makePopupPicker(e);
         }
-          console.log('clickkkk',e.originalEvent.which);
-        // console.log(e.originalEvent.which);
-        // if (e.originalEvent.which == 1) { // left click
-        //     // createMarker(e.lngLat.lng, e.lngLat.lat);
-        // } else { // not left click
-        //     makePopupPicker(e);
-        // }
         // console.log(map.getZoom());
     });
 
@@ -72,9 +76,9 @@ $(document).ready(function() {
 });
 
 function createMarker(lng, lat) {
-    // console.log('createMarker', e.lngLat.lat, e.lngLat.lng);
+    console.log('createMarker', lat, lng);
     let marker = getGeoJsonForMarker(lng, lat);
-    // console.log('marker', marker);
+    console.log('marker', marker);
     let randomImg = 'a' + Math.floor((Math.random() * 8) + 1) + '.gif';
 
     // create a DOM element for the marker
@@ -90,20 +94,24 @@ function createMarker(lng, lat) {
     //     console.log('click', this);
     // });
 
-    var popup = new mapboxgl.Popup({
-            offset: 25
-        })
-        .setText('-' + kounter);
+    // var popup = new mapboxgl.Popup({
+    //         offset: 25
+    //     })
+    //     .setText('-' + kounter);
 
     // add marker to map
     let mkr = markers.push(new mapboxgl.Marker(el, {
             offset: [-25, -25]
         })
         .setLngLat([lng, lat])
-        .setPopup(popup)
+        // .setPopup(popup)
         .addTo(map));
 
-    $('#markerId_' + kounter).append('<div class="markerLabel">' + kounter + '</div>');
+    $('#markerId_' + kounter).append(
+        '<div class="markerLabel" id="markerLabel_' + kounter + '">' + kounter + '</div>');
+    $('#markderId_' + kounter).mouseup(function(a,b,c){
+        console.log('mouseup on markderId_' + kounter);
+    });
     closePopup();
     kounter++;
 }
@@ -142,9 +150,9 @@ function makePopupPicker(e) {
     let theHtml = '';
     theHtml += "<div id='popupmain' class='popupmain' ";
     theHtml += " style='left: " + x + "px; top: " + e.point.y + "px;'>";
-    theHtml += '<div>some text goes here</div>';
-    theHtml += "<button onclick='createMarker(" + lng + "," + lat + ")'>Add Marker</button>"
-    theHtml += "<button onclick='closePopup()'>Close</button>"
+    theHtml += '<div class="sometext">some text goes here</div>';
+    theHtml += "<button class='buttonx' onclick='createMarker(" + lng + "," + lat + ")'>Add Marker</button>"
+    theHtml += "<button class='buttonx' onclick='closePopup()'>Close</button>"
     theHtml += "<br></div>";
 
     $('#popup').append(theHtml);
