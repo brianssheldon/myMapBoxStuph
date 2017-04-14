@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <h1>Timer</h1>
+</head>
+
+<body>
+    <br>
+    <div id='timestarteddd'></div>
+    <br>
+    <div id='timeee'></div>
+</body>
+
+</html>
+<style>
+
+</style>
+<script>
+    console.log('yoyoyo');
+    document.getElementById('timestarteddd').innerHTML = new Date();
+    document.getElementById('timeee').innerHTML = new Date(); //[date, time].join(' / ');
+    window.setInterval(doLoop, 1000);
+
+    function doLoop() {
+        document.getElementById('timeee').innerHTML = new Date();
+    }
+</script>

@@ -49,7 +49,7 @@ $(document).ready(function() {
             return;
         }
 
-        console.log('clickkkk',e.originalEvent.which);
+        console.log('clickkkk', e.originalEvent.which);
 
         if (e.originalEvent.which != 1) { // not left click
             // createMarker(e.lngLat.lng, e.lngLat.lat);
@@ -73,6 +73,11 @@ $(document).ready(function() {
         ' title="Reset map back to original view. Hot key: <alt> h"><span class="arrow";"></span></button>';
     // adds a navigation button that resets the view back to where it started
     $('.mapboxgl-ctrl-group').append(navigationHtml);
+
+    $('.mapboxgl-ctrl-zoom-in').prop('title', 'Zoom In. Hot key: +  ');
+    $('.mapboxgl-ctrl-zoom-out').prop('title', 'Zoom Out. Hot key: -  ');
+    $('.mapboxgl-ctrl-compass').prop('title', 'Reset map to north. Hot key: <alt> n');
+    $('.mapboxgl-ctrl-compass').attr('accesskey', 'n');
 });
 
 function createMarker(lng, lat) {
@@ -109,11 +114,55 @@ function createMarker(lng, lat) {
 
     $('#markerId_' + kounter).append(
         '<div class="markerLabel" id="markerLabel_' + kounter + '">' + kounter + '</div>');
-    $('#markderId_' + kounter).mouseup(function(a,b,c){
-        console.log('mouseup on markderId_' + kounter);
+    $('#markerId_' + kounter).mouseup(function(a, b, c) {
+        var id = a.target.innerText;
+        var thismarker = markers[id];
+        console.log('themarker', thismarker);
+        console.log('number of markers', markers.length, markers);
+        console.log('lng lat', thismarker._lngLat.lat, thismarker._lngLat.lng);
+        if(kounter > 1){
+
+                map.addSource("route2",getGeoJsonForLines(thismarker).data);// getGeoJsonForLines());
+            // for(var i = 0; i < kounter; i++){
+            //     map.getSource('route2').setData(getGeoJsonForLines(thismarker).data);
+            // }
+        }
     });
     closePopup();
     kounter++;
+}
+
+function getGeoJsonForLines(thismarker) {
+
+    let gjfl = {
+        type: 'geojson',
+        data: {
+            features: [],
+            type: "FeatureCollection"
+        }
+    };
+
+    for (let i = 0; i < markers.length; i++) {
+        if(i == id){console.log('equal', i, id);}
+        else{
+            gjfl.data.features[i] = {
+                type: 'Feature',
+                geometry: {
+                    type: "LineString",
+                    coordinates: [
+                        thismarker._lngLat.lng, thismarker._lngLat.lat,
+                        markers[i]._lngLat.lng, markers[i]._lngLat.lat
+                    ]
+                },
+                "properties": {
+                    title: 'aaa'
+                    // iidd: siteComlinks[i].id
+                }
+            };
+        }
+    }
+
+    return gjfl;
 }
 
 function getGeoJsonForMarker(lng, lat) {
@@ -150,7 +199,7 @@ function makePopupPicker(e) {
     let theHtml = '';
     theHtml += "<div id='popupmain' class='popupmain' ";
     theHtml += " style='left: " + x + "px; top: " + e.point.y + "px;'>";
-    theHtml += '<div class="sometext">some text goes here</div>';
+    // theHtml += '<div class="sometext">some text goes here</div>';
     theHtml += "<button class='buttonx' onclick='createMarker(" + lng + "," + lat + ")'>Add Marker</button>"
     theHtml += "<button class='buttonx' onclick='closePopup()'>Close</button>"
     theHtml += "<br></div>";
